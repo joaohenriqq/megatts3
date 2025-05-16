@@ -18,5 +18,8 @@ COPY megatts_api.py /app/megatts_api.py
 # Porta padrão
 EXPOSE 7860
 
+# Define o path da aplicação para que o Python encontre os módulos
+ENV PYTHONPATH=/app
+
 # Inicia a API
 CMD ["uvicorn", "megatts_api:app", "--host", "0.0.0.0", "--port", "7860"]
