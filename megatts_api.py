@@ -36,8 +36,16 @@ async def synthesize(request: Request):
     env["PYTHONPATH"] = "/app"
 
     try:
-        subprocess.run(command, check=True, env=env)
+        subprocess.run(command, check=True, env=env, shell=False)
+
+        if not os.path.exists(output_path):
+            return JSONResponse(
+                {"error": "Geração concluída mas o arquivo .wav não foi encontrado."},
+                status_code=500
+            )
+
         return FileResponse(output_path, media_type="audio/wav")
+
     except subprocess.CalledProcessError as e:
         return JSONResponse(
             {"error": f"Falha ao gerar áudio: {e}"},
