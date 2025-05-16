@@ -1,16 +1,20 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
+from pydantic import BaseModel
 import uuid
 import os
 import subprocess
 
 app = FastAPI()
 
+class SynthRequest(BaseModel):
+    text: str
+    latent: str
+
 @app.post("/synthesize")
-async def synthesize(request: Request):
-    data = await request.json()
-    text = data.get("text")
-    latent = data.get("latent")  # Ex: assets/English_prompt.npy
+async def synthesize(body: SynthRequest):
+    text = body.text
+    latent = body.latent  # Ex: assets/English_prompt.npy
 
     if not text or not latent:
         return JSONResponse(
